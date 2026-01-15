@@ -1,0 +1,100 @@
+@startuml A3_Minds_Use_Case_Diagram
+
+!theme plain
+skinparam actorStyle awesome
+skinparam useCaseStyle rectangle
+
+title A3 Minds - Use Case Diagram
+
+' Actors
+actor "Public User" as PublicUser
+actor "Admin" as Admin
+actor "System" as System
+
+' Package: Public Website
+package "Public Website" {
+  usecase "View Home Page" as UC1
+  usecase "View About Page" as UC2
+  usecase "View Vision & Mission" as UC3
+  usecase "View Events & Activities" as UC4
+  usecase "Register as Volunteer" as UC5
+  usecase "Contact Organization" as UC6
+  usecase "View Event Details" as UC7
+}
+
+' Package: Admin Dashboard
+package "Admin Dashboard" {
+  usecase "Admin Login" as UC8
+  usecase "Admin Logout" as UC9
+  usecase "View Event Management Dashboard" as UC10
+  usecase "Create New Event" as UC11
+  usecase "View All Events" as UC12
+  usecase "Edit Event" as UC13
+  usecase "Delete Event" as UC14
+  usecase "View Event Details" as UC15
+}
+
+' Package: System
+package "System" {
+  usecase "Authenticate Admin" as UC16
+  usecase "Store Event Data" as UC17
+  usecase "Retrieve Event Data" as UC18
+  usecase "Update Event Data" as UC19
+  usecase "Delete Event Data" as UC20
+  usecase "Validate Event Data" as UC21
+}
+
+' Public User relationships
+PublicUser --> UC1
+PublicUser --> UC2
+PublicUser --> UC3
+PublicUser --> UC4
+PublicUser --> UC5
+PublicUser --> UC6
+PublicUser --> UC7
+
+' Admin relationships
+Admin --> UC8
+Admin --> UC9
+Admin --> UC10
+Admin --> UC11
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+Admin --> UC15
+
+' System relationships
+UC8 --> UC16 : <<include>>
+UC11 --> UC17 : <<include>>
+UC11 --> UC21 : <<include>>
+UC12 --> UC18 : <<include>>
+UC13 --> UC19 : <<include>>
+UC13 --> UC21 : <<include>>
+UC14 --> UC20 : <<include>>
+UC4 --> UC18 : <<include>>
+UC7 --> UC18 : <<include>>
+UC15 --> UC18 : <<include>>
+
+' Extend relationships
+UC11 ..> UC12 : <<extend>>
+UC13 ..> UC12 : <<extend>>
+UC14 ..> UC12 : <<extend>>
+
+note right of UC8
+  Credentials:
+  Email: admin123@gmail.com
+  Password: a3admin@123
+end note
+
+note right of UC11
+  Fields:
+  - Title
+  - Date
+  - Location
+  - Description
+  - Participants
+  - Beneficiaries
+end note
+
+@enduml
+
