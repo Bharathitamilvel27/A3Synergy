@@ -49,48 +49,57 @@ const Home = () => {
 
   return (
     <div className="bg-white">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white">
-        <div className="container-custom section-padding">
+      {/* Hero Section - Animated Landing */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="/pics/pic3.webp"
+            alt="hero background"
+            className="w-full h-full object-cover opacity-40 blur-sm"
+          />
+        </div>
+        <div className="container-custom section-padding relative z-10">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Antony Charitable Trust
-              </h1>
-              <p className="text-xl md:text-2xl mb-8 text-primary-100">
-                "Life is a gift and it offers us the privilege, opportunity and responsibility to give something back"
+              <div className="inline-flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full overflow-hidden border border-white/30 bg-white/80">
+                  <img src="/pics/ANTONY-TRUST-LOGO.webp" alt="logo" className="w-full h-full object-contain" />
+                </div>
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">
+                    Antony Charitable Trust
+                  </h1>
+                  <p className="text-xs text-white/90 uppercase tracking-wider">A3 Minds • Community Impact</p>
+                </div>
+              </div>
+
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 animate-pulse">
+                Empowering communities through education, health and sustainability
+              </h2>
+
+              <p className="text-white/90 mb-6 max-w-xl">
+                Since 2010, we have delivered impactful programs across Tamil Nadu — workshops,
+                awareness campaigns, and community outreach. Join us to make a measurable difference.
               </p>
-              <p className="text-lg mb-10 text-primary-200">
-                Since 2010, we have been dedicated to empowering communities through Education, Healthcare, 
-                Environmental Sustainability, and Community Service. Based in Chennai, Tamil Nadu.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-start">
-                <Link to="/volunteer" className="btn-secondary">
-                  Become a Volunteer
+
+              <div className="flex gap-4">
+                <Link to="/register" className="btn-primary">
+                  Get Started
                 </Link>
-                <Link
-                  to="/events"
-                  className="btn-outline border-white text-white hover:bg-white hover:text-primary-600"
-                >
-                  View Events
+                <Link to="/events" className="btn-outline text-white border-white">
+                  Explore Events
                 </Link>
               </div>
             </div>
 
-            <div className="relative">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-white/20 bg-primary-900/20">
-                <img
-                  src="/pics/pic.webp"
-                  alt="A3 Minds training session with students"
-                  className="w-full h-full object-cover"
-                />
+            <div className="relative text-center">
+              <div className="mx-auto w-full max-w-md rounded-2xl overflow-hidden shadow-2xl transform transition-transform duration-700 hover:scale-105">
+                <img src="/pics/pic.webp" alt="training" className="w-full h-64 object-cover" />
               </div>
-              <div className="hidden sm:block absolute -bottom-6 -left-4 w-28 h-28 rounded-xl overflow-hidden shadow-lg ring-4 ring-white bg-white">
-                <img
-                  src="/pics/ANTONY-TRUST-LOGO.webp"
-                  alt="Antony Charitable Trust logo"
-                  className="w-full h-full object-contain bg-white"
-                />
+              <div className="mt-4 flex justify-center gap-3">
+                <img src="/pics/pic4.webp" alt="" className="w-20 h-14 object-cover rounded-lg shadow-md" />
+                <img src="/pics/pic5.webp" alt="" className="w-20 h-14 object-cover rounded-lg shadow-md" />
+                <img src="/pics/pic6.webp" alt="" className="w-20 h-14 object-cover rounded-lg shadow-md" />
               </div>
             </div>
           </div>

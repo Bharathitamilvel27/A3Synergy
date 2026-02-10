@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
-import { eventsAPI } from '../../services/api'
+import { eventsAPI, registrationsAPI } from '../../services/api'
 import { useNavigate } from 'react-router-dom'
 
 /**
@@ -23,6 +23,7 @@ const EventManagement = () => {
   const [error, setError] = useState('')
   const [editingId, setEditingId] = useState(null)
   const [deleteConfirm, setDeleteConfirm] = useState(null)
+  const [registrationsModal, setRegistrationsModal] = useState({ open: false, event: null, items: [] })
 
   const { logout } = useAuth()
   const navigate = useNavigate()
@@ -141,6 +142,19 @@ const EventManagement = () => {
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Error deleting event. Please try again.')
+    }
+  }
+
+  const viewRegistrations = async (eventId, eventTitle) => {
+    try {
+      const res = await registrationsAPI.getByEvent(eventId)
+      if (res.success) {
+        setRegistrationsModal({ open: true, event: eventTitle, items: res.registrations })
+      } else {
+        setError(res.message || 'Failed to load registrations')
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error loading registrations')
     }
   }
 
@@ -415,6 +429,12 @@ const EventManagement = () => {
                         >
                           Delete
                         </button>
+                        <button
+                          onClick={() => viewRegistrations(event._id, event.title)}
+                          className="flex-1 px-3 py-2 bg-secondary-600 text-white text-sm rounded-lg hover:bg-secondary-700 transition-colors"
+                        >
+                          Registrations
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -446,6 +466,33 @@ const EventManagement = () => {
               >
                 Delete
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Registrations Modal */}
+      {registrationsModal.open && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-900">Registrations - {registrationsModal.event}</h3>
+              <button onClick={() => setRegistrationsModal({ open: false, event: null, items: [] })} className="text-gray-600">Close</button>
+            </div>
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {registrationsModal.items.length === 0 ? (
+                <p className="text-sm text-gray-600">No registrations yet.</p>
+              ) : (
+                registrationsModal.items.map((r) => (
+                  <div key={r._id} className="border p-3 rounded-lg flex items-center justify-between">
+                    <div>
+                      <div className="font-medium">{r.userId?.name || '—'}</div>
+                      <div className="text-sm text-gray-600">{r.userId?.email}</div>
+                      <div className="text-sm text-gray-500">{new Date(r.registrationDate).toLocaleString()}</div>
+                    </div>
+                    <div className="text-sm text-gray-700">{r.status}</div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

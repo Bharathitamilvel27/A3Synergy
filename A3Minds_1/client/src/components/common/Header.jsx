@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useUserAuth } from '../../context/UserAuthContext'
 
 /**
  * Header Component
@@ -20,6 +21,7 @@ const Header = () => {
   ]
 
   const isActive = (path) => location.pathname === path
+  const { user, isAuthenticated, logout } = useUserAuth()
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
@@ -59,12 +61,51 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
-            <Link
-              to="/admin/login"
-              className="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors"
-            >
-              Admin Login
-            </Link>
+            {!isAuthenticated ? (
+              <div className="flex items-center space-x-3">
+                <Link
+                  to="/login"
+                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-600"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="px-3 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors"
+                >
+                  Register
+                </Link>
+                {/* Admin login intentionally hidden from public header for security */}
+              </div>
+            ) : (
+              <div className="flex items-center space-x-3">
+                <Link to="/my-registrations" className="text-sm text-gray-700 hover:text-primary-600">
+                  My Registrations
+                </Link>
+                <Link to="/profile" className="text-sm text-gray-700 hover:text-primary-600">
+                  Profile
+                </Link>
+                <div className="flex items-center gap-2 p-1 rounded-md hover:bg-gray-50">
+                  <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-200 bg-white">
+                    <img
+                      src="/pics/ANTONY-TRUST-LOGO.webp"
+                      alt="profile"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="text-sm text-gray-800">{user?.name || user?.email}</div>
+                </div>
+                <button
+                  onClick={() => {
+                    logout()
+                    window.location.href = '/'
+                  }}
+                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-600"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -108,6 +149,20 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
+            <Link
+              to="/login"
+              onClick={() => setIsMenuOpen(false)}
+              className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 mt-2"
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              onClick={() => setIsMenuOpen(false)}
+              className="block px-3 py-2 text-base font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 mt-2"
+            >
+              Register
+            </Link>
             <Link
               to="/admin/login"
               onClick={() => setIsMenuOpen(false)}

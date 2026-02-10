@@ -16,12 +16,14 @@ const api = axios.create({
   },
 })
 
-// Request interceptor to add auth token
+// Request interceptor to add auth token (supports adminToken and user token)
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('adminToken')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+    const adminToken = localStorage.getItem('adminToken')
+    const token = localStorage.getItem('token')
+    const authToken = adminToken || token
+    if (authToken) {
+      config.headers.Authorization = `Bearer ${authToken}`
     }
     return config
   },
@@ -42,10 +44,22 @@ api.interceptors.response.use(
     }
 
     if (error.response?.status === 401) {
-      // Token expired or invalid
-      localStorage.removeItem('adminToken')
-      localStorage.removeItem('adminUser')
-      window.location.href = '/admin/login'
+      // Token expired or invalid - clear tokens and redirect appropriately
+      const adminToken = localStorage.getItem('adminToken')
+      if (adminToken) {
+        localStorage.removeItem('adminToken')
+        localStorage.removeItem('adminUser')
+        window.location.href = '/admin/login'
+      } else {
+        localStorage.removeItem('token')
+        localStorage.removeItem('authUser')
+        // If on admin area, redirect to admin login; otherwise go to user login
+        if (window.location.pathname.startsWith('/admin')) {
+          window.location.href = '/admin/login'
+        } else {
+          window.location.href = '/login'
+        }
+      }
     }
     return Promise.reject(error)
   }
@@ -61,6 +75,40 @@ export const authAPI = {
   },
   getCurrentUser: async () => {
     const response = await api.get('/auth/me')
+    return response.data
+  },
+}
+
+export const userAuthAPI = {
+  register: async (payload) => {
+    const response = await api.post('/auth/register', payload)
+    return response.data
+  },
+  login: async (email, password) => {
+    const response = await api.post('/auth/login-user', { email, password })
+    return response.data
+  },
+  getCurrentUser: async () => {
+    const response = await api.get('/auth/me')
+    return response.data
+  },
+  updateProfile: async (payload) => {
+    const response = await api.put('/auth/me', payload)
+    return response.data
+  },
+}
+
+export const registrationsAPI = {
+  registerForEvent: async (eventId) => {
+    const response = await api.post('/registrations/register', { eventId })
+    return response.data
+  },
+  getByEvent: async (eventId) => {
+    const response = await api.get(`/registrations/event/${eventId}`)
+    return response.data
+  },
+  getMyRegistrations: async () => {
+    const response = await api.get('/registrations/me')
     return response.data
   },
 }

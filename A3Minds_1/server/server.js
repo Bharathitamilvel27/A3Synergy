@@ -6,6 +6,7 @@ import connectDB from './config/database.js'
 // Import routes
 import eventRoutes from './routes/eventRoutes.js'
 import authRoutes from './routes/authRoutes.js'
+import registrationRoutes from './routes/registrationRoutes.js'
 
 // Load environment variables
 dotenv.config()
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true })) // Parse URL-encoded bodies
 // Routes
 app.use('/api/events', eventRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/registrations', registrationRoutes)
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

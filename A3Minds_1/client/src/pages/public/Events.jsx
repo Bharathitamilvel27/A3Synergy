@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
-import { eventsAPI } from '../../services/api'
+import { eventsAPI, registrationsAPI } from '../../services/api'
+import { useUserAuth } from '../../context/UserAuthContext'
+import { useNavigate } from 'react-router-dom'
 
 /**
  * Events & Activities Page
@@ -11,6 +13,9 @@ const Events = () => {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [userRegs, setUserRegs] = useState([])
+  const [registeredIds, setRegisteredIds] = useState(new Set())
+  const navigate = useNavigate()
 
   const getEventImage = (event, isPastTab) => {
     const title = (event?.title || '').toLowerCase()
@@ -37,6 +42,31 @@ const Events = () => {
     fetchEvents()
   }, [])
 
+  const { isAuthenticated } = useUserAuth()
+
+  // Fetch user's registrations when authenticated
+  const fetchUserRegistrations = async () => {
+    try {
+      const res = await registrationsAPI.getMyRegistrations()
+      if (res.success) {
+        setUserRegs(res.registrations || [])
+        const ids = new Set((res.registrations || []).map((r) => String(r.eventId._id || r.eventId)))
+        setRegisteredIds(ids)
+      }
+    } catch (err) {
+      console.error('Error fetching user registrations:', err)
+    }
+  }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUserRegistrations()
+    } else {
+      setUserRegs([])
+      setRegisteredIds(new Set())
+    }
+  }, [isAuthenticated])
+
   const fetchEvents = async () => {
     setLoading(true)
     setError('')
@@ -62,6 +92,47 @@ const Events = () => {
       month: 'long',
       day: 'numeric',
     })
+  }
+
+  // Register button component (uses user auth)
+  const RegisterButton = ({ eventId }) => {
+    const { isAuthenticated, login } = useUserAuth()
+    const navigate = useNavigate()
+    const [loadingRegister, setLoadingRegister] = useState(false)
+    const [message, setMessage] = useState('')
+
+    const handleRegister = async () => {
+      setMessage('')
+      if (!isAuthenticated) {
+        // Redirect to user login
+        navigate('/login', { state: { from: `/events` } })
+        return
+      }
+      setLoadingRegister(true)
+      try {
+        const res = await registrationsAPI.registerForEvent(eventId)
+        if (res.success) {
+          setMessage('Registration successful')
+          // refresh user's registrations to reflect new state immediately
+          await fetchUserRegistrations()
+        } else {
+          setMessage(res.message || 'Registration failed')
+        }
+      } catch (err) {
+        setMessage(err.response?.data?.message || err.message || 'Error registering')
+      } finally {
+        setLoadingRegister(false)
+      }
+    }
+
+    return (
+      <div>
+        {message && <div className="text-sm text-green-600 mb-2">{message}</div>}
+        <button onClick={handleRegister} disabled={loadingRegister} className="btn-primary w-full">
+          {loadingRegister ? 'Registering...' : 'Register Now'}
+        </button>
+      </div>
+    )
   }
 
   // Filter events based on active tab
@@ -261,9 +332,16 @@ const Events = () => {
                   </div>
 
                   {activeTab === 'upcoming' && (
-                    <button className="btn-primary w-full">
-                      Register Now
-                    </button>
+                    registeredIds.has(String(event._id)) ? (
+                      <button
+                        onClick={() => navigate('/my-registrations')}
+                        className="btn-outline w-full"
+                      >
+                        Registered
+                      </button>
+                    ) : (
+                      <RegisterButton eventId={event._id} />
+                    )
                   )}
                 </div>
               ))}
