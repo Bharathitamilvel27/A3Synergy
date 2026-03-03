@@ -99,8 +99,8 @@ export const userAuthAPI = {
 }
 
 export const registrationsAPI = {
-  registerForEvent: async (eventId) => {
-    const response = await api.post('/registrations/register', { eventId })
+  registerForEvent: async (eventId, data = {}) => {
+    const response = await api.post('/registrations/register', { eventId, ...data })
     return response.data
   },
   getByEvent: async (eventId) => {
@@ -109,6 +109,12 @@ export const registrationsAPI = {
   },
   getMyRegistrations: async () => {
     const response = await api.get('/registrations/me')
+    return response.data
+  },
+  exportToCSV: async (eventId) => {
+    const response = await api.get(`/registrations/export/${eventId}`, {
+      responseType: 'blob'
+    })
     return response.data
   },
 }

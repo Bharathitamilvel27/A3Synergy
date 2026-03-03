@@ -85,7 +85,7 @@ const Header = () => {
                 <Link to="/profile" className="text-sm text-gray-700 hover:text-primary-600">
                   Profile
                 </Link>
-                <div className="flex items-center gap-2 p-1 rounded-md hover:bg-gray-50">
+                <Link to="/profile" className="flex items-center gap-2 p-1 rounded-md hover:bg-gray-50">
                   <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-200 bg-white">
                     <img
                       src="/pics/ANTONY-TRUST-LOGO.webp"
@@ -94,7 +94,7 @@ const Header = () => {
                     />
                   </div>
                   <div className="text-sm text-gray-800">{user?.name || user?.email}</div>
-                </div>
+                </Link>
                 <button
                   onClick={() => {
                     logout()

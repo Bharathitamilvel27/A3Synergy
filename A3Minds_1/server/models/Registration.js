@@ -1,20 +1,20 @@
 import mongoose from 'mongoose'
 
 /**
- * EventRegistration Schema
- * Links users to events with comprehensive NGO registration form data
+ * Registration Schema
+ * Stores event registrations with comprehensive NGO form data
  */
-const eventRegistrationSchema = new mongoose.Schema(
+const registrationSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: [true, 'User ID is required'],
     },
     eventId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Event',
-      required: true,
+      required: [true, 'Event ID is required'],
     },
     formData: {
       fullName: {
@@ -59,14 +59,14 @@ const eventRegistrationSchema = new mongoose.Schema(
         maxlength: [500, 'Reason cannot exceed 500 characters'],
       },
     },
-    registrationDate: {
-      type: Date,
-      default: Date.now,
-    },
     status: {
       type: String,
       enum: ['registered', 'confirmed', 'cancelled', 'attended'],
       default: 'registered',
+    },
+    registeredAt: {
+      type: Date,
+      default: Date.now,
     },
   },
   {
@@ -74,10 +74,14 @@ const eventRegistrationSchema = new mongoose.Schema(
   }
 )
 
-// Prevent duplicate registration per user/event at DB level
-eventRegistrationSchema.index({ userId: 1, eventId: 1 }, { unique: true })
+// Compound index to prevent duplicate registrations
+registrationSchema.index({ userId: 1, eventId: 1 }, { unique: true })
 
-const EventRegistration = mongoose.model('EventRegistration', eventRegistrationSchema)
+// Index for efficient queries
+registrationSchema.index({ eventId: 1 })
+registrationSchema.index({ status: 1 })
+registrationSchema.index({ registeredAt: 1 })
 
-export default EventRegistration
+const Registration = mongoose.model('Registration', registrationSchema)
 
+export default Registration

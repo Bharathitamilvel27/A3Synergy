@@ -19,6 +19,8 @@ export const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body
 
+    console.log('Login attempt:', { email, password: '***' })
+
     // Validate input
     if (!email || !password) {
       return res.status(400).json({
@@ -29,6 +31,7 @@ export const adminLogin = async (req, res) => {
 
     // Check credentials
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      console.log('Credentials match - generating token')
       // Generate JWT token
       const token = jwt.sign(
         { email: ADMIN_EMAIL, role: 'admin' },
@@ -46,6 +49,11 @@ export const adminLogin = async (req, res) => {
         },
       })
     } else {
+      console.log('Credentials mismatch:', { 
+        inputEmail: email, 
+        expectedEmail: ADMIN_EMAIL,
+        passwordsMatch: password === ADMIN_PASSWORD
+      })
       res.status(401).json({
         success: false,
         message: 'Invalid email or password',
@@ -188,18 +196,21 @@ export const updateProfile = async (req, res) => {
     const userId = req.user?.id
     if (!userId) return res.status(401).json({ success: false, message: 'Unauthorized' })
 
-    const { name, phone, avatar } = req.body
+    const { name, phone, age, gender, address, avatar } = req.body
 
     const user = await User.findById(userId)
     if (!user) return res.status(404).json({ success: false, message: 'User not found' })
 
     if (name) user.name = name
     if (phone) user.phone = phone
+    if (age !== undefined) user.age = age
+    if (gender) user.gender = gender
+    if (address) user.address = address
     if (avatar) user.avatar = avatar
 
     await user.save()
 
-    res.status(200).json({ success: true, message: 'Profile updated', user: { id: user._id, name: user.name, email: user.email, phone: user.phone, avatar: user.avatar } })
+    res.status(200).json({ success: true, message: 'Profile updated', user: { id: user._id, name: user.name, email: user.email, phone: user.phone, age: user.age, gender: user.gender, address: user.address, avatar: user.avatar } })
   } catch (error) {
     console.error('Error updating profile:', error)
     res.status(500).json({ success: false, message: 'Error updating profile', error: error.message })

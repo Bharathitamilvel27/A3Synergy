@@ -1,5 +1,5 @@
 import express from 'express'
-import { registerForEvent, getRegistrationsByEvent, getUserRegistrations } from '../controllers/registrationController.js'
+import { registerForEvent, getRegistrationsByEvent, getUserRegistrations, exportRegistrationsCSV } from '../controllers/registrationController.js'
 import { authenticate } from '../middlewares/auth.js'
 
 const router = express.Router()
@@ -17,6 +17,9 @@ router.get('/event/:eventId', authenticate, getRegistrationsByEvent)
 
 // GET /api/registrations/me - current user's registrations
 router.get('/me', authenticate, getUserRegistrations)
+
+// GET /api/registrations/export/:eventId - export registrations as CSV (admin)
+router.get('/export/:eventId', authenticate, exportRegistrationsCSV)
 
 export default router
 

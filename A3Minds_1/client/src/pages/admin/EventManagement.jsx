@@ -192,6 +192,12 @@ const EventManagement = () => {
             </div>
             <div className="flex items-center space-x-4">
               <a
+                href="/admin/participants"
+                className="text-gray-600 hover:text-primary-600 font-medium"
+              >
+                View Participants
+              </a>
+              <a
                 href="/"
                 className="text-gray-600 hover:text-primary-600 font-medium"
               >

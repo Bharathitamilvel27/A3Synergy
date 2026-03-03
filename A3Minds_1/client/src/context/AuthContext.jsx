@@ -25,9 +25,13 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('adminToken')
     const savedUser = localStorage.getItem('adminUser')
 
+    console.log('AuthContext mount - token:', token)
+    console.log('AuthContext mount - savedUser:', savedUser)
+
     if (token && savedUser) {
       setUser(JSON.parse(savedUser))
       setIsAuthenticated(true)
+      console.log('AuthContext mount - authenticated from localStorage')
     }
     setLoading(false)
   }, [])
@@ -37,7 +41,10 @@ export const AuthProvider = ({ children }) => {
    */
   const login = async (email, password) => {
     try {
+      console.log('AuthContext login attempt:', { email, password: '***' })
       const response = await authAPI.login(email, password)
+      
+      console.log('AuthContext login response:', response)
       
       if (response.success) {
         // Store token and user info
@@ -47,11 +54,14 @@ export const AuthProvider = ({ children }) => {
         setUser(response.user)
         setIsAuthenticated(true)
         
+        console.log('AuthContext login successful')
         return { success: true, message: response.message }
       } else {
+        console.log('AuthContext login failed:', response.message)
         return { success: false, message: response.message }
       }
     } catch (error) {
+      console.error('AuthContext login error:', error)
       return {
         success: false,
         message: error.response?.data?.message || 'Login failed. Please try again.',
@@ -76,6 +86,8 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
   }
+
+  console.log('AuthContext state:', { user, isAuthenticated, loading })
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

@@ -20,6 +20,7 @@ import Profile from './pages/public/Profile'
 // Admin Pages
 import AdminLogin from './pages/admin/Login'
 import EventManagement from './pages/admin/EventManagement'
+import ParticipantsView from './pages/admin/ParticipantsView'
 
 /**
  * Main App Component
@@ -43,6 +44,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <EventManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/participants"
+            element={
+              <ProtectedRoute>
+                <ParticipantsView />
               </ProtectedRoute>
             }
           />

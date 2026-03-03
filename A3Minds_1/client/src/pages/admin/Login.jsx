@@ -17,9 +17,21 @@ const Login = () => {
   const { login, isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
+  // Keep error message visible for 5 seconds
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError('')
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [error])
+
   // Redirect if already authenticated
   useEffect(() => {
+    console.log('Login useEffect - isAuthenticated:', isAuthenticated)
     if (isAuthenticated) {
+      console.log('Login useEffect - redirecting to /admin/events')
       navigate('/admin/events', { replace: true })
     }
   }, [isAuthenticated, navigate])
@@ -29,7 +41,7 @@ const Login = () => {
       ...formData,
       [e.target.name]: e.target.value,
     })
-    setError('') // Clear error on input change
+    // Don't clear error on input change immediately - let user see the error
   }
 
   const handleSubmit = async (e) => {
@@ -37,16 +49,25 @@ const Login = () => {
     setError('')
     setLoading(true)
 
+    console.log('Attempting login with:', { email: formData.email, password: '***' })
+
     try {
       const result = await login(formData.email, formData.password)
+      
+      console.log('Login result:', result)
+      console.log('Result success:', result.success)
+      console.log('Result message:', result.message)
 
       if (result.success) {
+        console.log('Login successful - redirecting to /admin/events')
         // Redirect to admin dashboard
         navigate('/admin/events', { replace: true })
       } else {
+        console.log('Login failed - setting error:', result.message)
         setError(result.message)
       }
     } catch (err) {
+      console.error('Login error:', err)
       if (err.isConnectionError) {
         setError(err.message)
       } else {

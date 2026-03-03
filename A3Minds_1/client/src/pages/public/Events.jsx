@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { eventsAPI, registrationsAPI } from '../../services/api'
 import { useUserAuth } from '../../context/UserAuthContext'
 import { useNavigate } from 'react-router-dom'
+import RegistrationForm from '../../components/forms/RegistrationForm'
 
 /**
  * Events & Activities Page
@@ -15,6 +16,7 @@ const Events = () => {
   const [error, setError] = useState('')
   const [userRegs, setUserRegs] = useState([])
   const [registeredIds, setRegisteredIds] = useState(new Set())
+  const [registrationModal, setRegistrationModal] = useState({ isOpen: false, eventId: null })
   const navigate = useNavigate()
 
   const getEventImage = (event, isPastTab) => {
@@ -94,45 +96,37 @@ const Events = () => {
     })
   }
 
-  // Register button component (uses user auth)
+  // Register button component (opens comprehensive registration form)
   const RegisterButton = ({ eventId }) => {
-    const { isAuthenticated, login } = useUserAuth()
-    const navigate = useNavigate()
-    const [loadingRegister, setLoadingRegister] = useState(false)
-    const [message, setMessage] = useState('')
+    const { isAuthenticated } = useUserAuth()
 
-    const handleRegister = async () => {
-      setMessage('')
+    const handleRegister = () => {
       if (!isAuthenticated) {
-        // Redirect to user login
         navigate('/login', { state: { from: `/events` } })
         return
       }
-      setLoadingRegister(true)
-      try {
-        const res = await registrationsAPI.registerForEvent(eventId)
-        if (res.success) {
-          setMessage('Registration successful')
-          // refresh user's registrations to reflect new state immediately
-          await fetchUserRegistrations()
-        } else {
-          setMessage(res.message || 'Registration failed')
-        }
-      } catch (err) {
-        setMessage(err.response?.data?.message || err.message || 'Error registering')
-      } finally {
-        setLoadingRegister(false)
-      }
+      setRegistrationModal({ isOpen: true, eventId })
     }
 
     return (
-      <div>
-        {message && <div className="text-sm text-green-600 mb-2">{message}</div>}
-        <button onClick={handleRegister} disabled={loadingRegister} className="btn-primary w-full">
-          {loadingRegister ? 'Registering...' : 'Register Now'}
-        </button>
-      </div>
+      <button 
+        onClick={handleRegister} 
+        className={`btn-primary w-full ${
+          !isAuthenticated ? 'opacity-50 cursor-not-allowed' : ''
+        }`}
+      >
+        {!isAuthenticated ? 'Login to Register' : 'Register Now'}
+      </button>
     )
+  }
+
+  const handleRegistrationSuccess = () => {
+    // Refresh user registrations to reflect the new registration
+    fetchUserRegistrations()
+  }
+
+  const closeRegistrationModal = () => {
+    setRegistrationModal({ isOpen: false, eventId: null })
   }
 
   // Filter events based on active tab
@@ -463,6 +457,14 @@ const Events = () => {
           </div>
         </div>
       </section>
+
+      {/* Registration Form Modal */}
+      <RegistrationForm
+        eventId={registrationModal.eventId}
+        isOpen={registrationModal.isOpen}
+        onClose={closeRegistrationModal}
+        onSuccess={handleRegistrationSuccess}
+      />
     </div>
   )
 }

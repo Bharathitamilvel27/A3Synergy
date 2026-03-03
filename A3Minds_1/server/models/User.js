@@ -28,6 +28,21 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    age: {
+      type: Number,
+      min: [1, 'Age must be at least 1'],
+      max: [120, 'Age cannot exceed 120'],
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'other', 'prefer-not-to-say'],
+      default: 'prefer-not-to-say',
+    },
+    address: {
+      type: String,
+      trim: true,
+      maxlength: [500, 'Address cannot exceed 500 characters'],
+    },
     avatar: {
       type: String,
       trim: true,
