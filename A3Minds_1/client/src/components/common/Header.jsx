@@ -79,9 +79,6 @@ const Header = () => {
               </div>
             ) : (
               <div className="flex items-center space-x-3">
-                <Link to="/my-registrations" className="text-sm text-gray-700 hover:text-primary-600">
-                  My Registrations
-                </Link>
                 <Link to="/profile" className="text-sm text-gray-700 hover:text-primary-600">
                   Profile
                 </Link>

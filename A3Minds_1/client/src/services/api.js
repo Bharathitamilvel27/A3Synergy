@@ -146,5 +146,34 @@ export const eventsAPI = {
   },
 }
 
+/**
+ * Feedback API
+ */
+export const feedbackAPI = {
+  submit: async (feedbackData) => {
+    const response = await api.post('/feedback', feedbackData)
+    return response.data
+  },
+  getByEvent: async (eventId, filters = {}) => {
+    const params = new URLSearchParams()
+    if (filters.status) params.append('status', filters.status)
+    if (filters.sentiment) params.append('sentiment', filters.sentiment)
+    const response = await api.get(`/feedback/event/${eventId}?${params.toString()}`)
+    return response.data
+  },
+  getMyFeedback: async () => {
+    const response = await api.get('/feedback/my-feedback')
+    return response.data
+  },
+  getSummary: async () => {
+    const response = await api.get('/feedback/summary')
+    return response.data
+  },
+  updateStatus: async (feedbackId, status) => {
+    const response = await api.put(`/feedback/${feedbackId}`, { status })
+    return response.data
+  },
+}
+
 export default api
 

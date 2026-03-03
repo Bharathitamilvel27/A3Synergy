@@ -82,9 +82,18 @@ export const getRegistrationsByEvent = async (req, res) => {
       return res.status(400).json({ success: false, message: 'eventId is required' })
     }
 
+    // Check if user is authenticated
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: 'Unauthorized - no user found' })
+    }
+
     // Only admin can view full registration lists
-    if (!req.user || req.user.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Forbidden' })
+    // Admin tokens have role: 'admin' in the JWT payload
+    const isAdmin = req.user && (req.user.role === 'admin' || req.user.email === 'admin123@gmail.com')
+    
+    if (!isAdmin) {
+      console.error('Access denied - user role:', req.user.role, 'user email:', req.user.email)
+      return res.status(403).json({ success: false, message: 'Forbidden - Admin access required' })
     }
 
     const registrations = await EventRegistration.find({ eventId })
@@ -168,6 +177,16 @@ export const getAllRegistrations = async (req, res) => {
 export const exportRegistrationsCSV = async (req, res) => {
   try {
     const { eventId } = req.params
+
+    // Check if user is authenticated and is admin
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: 'Unauthorized - no user found' })
+    }
+
+    const isAdmin = req.user && (req.user.role === 'admin' || req.user.email === 'admin123@gmail.com')
+    if (!isAdmin) {
+      return res.status(403).json({ success: false, message: 'Forbidden - Admin access required' })
+    }
 
     // Check if event exists
     const event = await Event.findById(eventId)

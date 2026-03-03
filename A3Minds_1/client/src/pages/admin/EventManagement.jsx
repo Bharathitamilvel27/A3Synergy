@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { eventsAPI, registrationsAPI } from '../../services/api'
 import { useNavigate } from 'react-router-dom'
+import AdminLayout from '../../components/common/AdminLayout'
 
 /**
  * Admin Event Management Page
@@ -175,7 +176,8 @@ const EventManagement = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <AdminLayout>
+      <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-md">
         <div className="container-custom py-4">
@@ -504,6 +506,7 @@ const EventManagement = () => {
         </div>
       )}
     </div>
+    </AdminLayout>
   )
 }
 

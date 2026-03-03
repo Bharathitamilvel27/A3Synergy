@@ -8,10 +8,16 @@ import Event from '../models/Event.js'
 /**
  * @desc    Create a new event
  * @route   POST /api/events
- * @access  Private (Admin only - will be implemented with auth middleware)
+ * @access  Private (Admin only)
  */
 export const createEvent = async (req, res) => {
   try {
+    // Check if admin
+    const isAdmin = req.user && (req.user.role === 'admin' || req.user.email === 'admin123@gmail.com')
+    if (!isAdmin) {
+      return res.status(403).json({ success: false, message: 'Forbidden - Admin access required' })
+    }
+
     const { title, date, location, description, participants, beneficiaries } = req.body
 
     // Validate required fields

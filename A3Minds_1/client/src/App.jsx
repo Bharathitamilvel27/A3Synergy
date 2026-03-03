@@ -14,13 +14,15 @@ import Volunteer from './pages/public/Volunteer'
 import Contact from './pages/public/Contact'
 import Login from './pages/public/Login'
 import Register from './pages/public/Register'
-import MyRegistrations from './pages/public/MyRegistrations'
+
 import Profile from './pages/public/Profile'
+import Feedback from './pages/public/Feedback'
 
 // Admin Pages
 import AdminLogin from './pages/admin/Login'
 import EventManagement from './pages/admin/EventManagement'
 import ParticipantsView from './pages/admin/ParticipantsView'
+import ImpactAnalytics from './pages/admin/ImpactAnalytics'
 
 /**
  * Main App Component
@@ -55,6 +57,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/impact-analytics"
+            element={
+              <ProtectedRoute>
+                <ImpactAnalytics />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Public Routes (with Header/Footer) */}
           <Route
@@ -69,8 +79,8 @@ function App() {
                       <Route path="/about" element={<About />} />
                       <Route path="/vision-mission" element={<VisionMission />} />
                       <Route path="/events" element={<Events />} />
-                      <Route path="/my-registrations" element={<MyRegistrations />} />
                       <Route path="/profile" element={<Profile />} />
+                      <Route path="/feedback" element={<Feedback />} />
                       <Route path="/volunteer" element={<Volunteer />} />
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/login" element={<Login />} />
