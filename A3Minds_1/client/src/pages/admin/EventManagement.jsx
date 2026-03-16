@@ -505,6 +505,7 @@ const EventManagement = () => {
           </div>
         </div>
       )}
+    </div>
     </AdminLayout>
   )
 }
