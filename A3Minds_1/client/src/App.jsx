@@ -32,45 +32,45 @@ import ImpactAnalytics from './pages/admin/ImpactAnalytics'
 function App() {
   return (
     <AuthProvider>
-      <Router
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
-        <Routes>
-          {/* Admin Routes (without Header/Footer) */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route
-            path="/admin/events"
-            element={
-              <ProtectedRoute>
-                <EventManagement />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/participants"
-            element={
-              <ProtectedRoute>
-                <ParticipantsView />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/impact-analytics"
-            element={
-              <ProtectedRoute>
-                <ImpactAnalytics />
-              </ProtectedRoute>
-            }
-          />
+      <UserAuthProvider>
+        <Router
+          future={{
+            v7_startTransition: true,
+            v7_relativeSplatPath: true,
+          }}
+        >
+          <Routes>
+            {/* Admin Routes (without Header/Footer) */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route
+              path="/admin/events"
+              element={
+                <ProtectedRoute>
+                  <EventManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/participants"
+              element={
+                <ProtectedRoute>
+                  <ParticipantsView />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/impact-analytics"
+              element={
+                <ProtectedRoute>
+                  <ImpactAnalytics />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Public Routes (with Header/Footer) */}
-          <Route
-            path="/*"
-            element={
-              <UserAuthProvider>
+            {/* Public Routes (with Header/Footer) */}
+            <Route
+              path="/"
+              element={
                 <div className="min-h-screen flex flex-col">
                   <Header />
                   <main className="flex-grow">
@@ -89,11 +89,11 @@ function App() {
                   </main>
                   <Footer />
                 </div>
-              </UserAuthProvider>
-            }
-          />
-        </Routes>
-      </Router>
+              }
+            />
+          </Routes>
+        </Router>
+      </UserAuthProvider>
     </AuthProvider>
   )
 }

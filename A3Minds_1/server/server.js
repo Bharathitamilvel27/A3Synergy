@@ -19,7 +19,16 @@ connectDB()
 const app = express()
 
 // Middleware
-app.use(cors()) // Enable CORS for frontend
+app.use(cors({
+  origin: [
+    'http://localhost:5173',           // Local development
+    'http://localhost:3000',           // Alternative local port
+    'https://a3-synergy.vercel.app'    // Vercel deployed frontend
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+})) // Enable CORS for frontend
 app.use(express.json()) // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })) // Parse URL-encoded bodies
 
