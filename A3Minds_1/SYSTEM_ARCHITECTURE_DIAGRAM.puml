@@ -1,0 +1,122 @@
+@startuml A3_Minds_System_Architecture
+
+!theme plain
+skinparam classBackgroundColor #FEFECE
+skinparam classBorderColor #D4AF37
+skinparam classArrowColor #000000
+
+title A3 Minds - System Architecture Diagram
+
+package "Frontend Layer" {
+  class Home {
+    - Display volunteer opportunities
+    - Show event listings
+  }
+  
+  class Events {
+    - List all events
+    - Event details
+    - Event registration
+  }
+  
+  class Register {
+    - Volunteer registration form
+    - Input validation
+  }
+  
+  class AdminDashboard {
+    - Admin panel access
+    - Event management
+  }
+}
+
+package "Backend Layer" {
+  class AuthController {
+    + login()
+    + register()
+    + logout()
+  }
+  
+  class EventController {
+    + getAllEvents()
+    + getEventById()
+    + createEvent()
+    + updateEvent()
+    + deleteEvent()
+  }
+  
+  class RegistrationController {
+    + registerVolunteer()
+    + getRegistrations()
+    + updateRegistration()
+  }
+  
+  class FeedbackController {
+    + submitFeedback()
+    + getFeedback()
+  }
+}
+
+package "Data Layer" {
+  class User {
+    - id: String
+    - name: String
+    - email: String
+    - password: String
+    - role: String
+  }
+  
+  class Event {
+    - id: String
+    - title: String
+    - description: String
+    - date: Date
+    - location: String
+    - capacity: Number
+    - registrations: EventRegistration[]
+  }
+  
+  class EventRegistration {
+    - id: String
+    - userId: String
+    - eventId: String
+    - registrationDate: Date
+    - status: String
+  }
+  
+  class Feedback {
+    - id: String
+    - userId: String
+    - eventId: String
+    - rating: Number
+    - comments: String
+    - feedbackDate: Date
+  }
+  
+  class Registration {
+    - id: String
+    - userId: String
+    - registrationDate: Date
+    - status: String
+  }
+}
+
+' Relationships
+Events --> EventController : uses
+Register --> AuthController : uses
+AdminDashboard --> EventController : uses
+AdminDashboard --> RegistrationController : uses
+
+EventController --> Event : manages
+EventController --> EventRegistration : manages
+RegistrationController --> Registration : manages
+RegistrationController --> User : references
+AuthController --> User : manages
+FeedbackController --> Feedback : manages
+
+Event --> EventRegistration : contains
+EventRegistration --> User : associates with
+Feedback --> User : from
+Feedback --> Event : about
+
+@enduml
