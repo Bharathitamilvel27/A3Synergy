@@ -29,6 +29,16 @@ import ImpactAnalytics from './pages/admin/ImpactAnalytics'
  * Sets up routing for all public and admin pages
  * Wraps all pages with Header and Footer
  */
+
+// Layout component for public pages
+const PublicLayout = ({ children }) => (
+  <div className="min-h-screen flex flex-col">
+    <Header />
+    <main className="flex-grow">{children}</main>
+    <Footer />
+  </div>
+)
+
 function App() {
   return (
     <AuthProvider>
@@ -67,30 +77,17 @@ function App() {
               }
             />
 
-            {/* Public Routes (with Header/Footer) */}
-            <Route
-              path="/"
-              element={
-                <div className="min-h-screen flex flex-col">
-                  <Header />
-                  <main className="flex-grow">
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/vision-mission" element={<VisionMission />} />
-                      <Route path="/events" element={<Events />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/feedback" element={<Feedback />} />
-                      <Route path="/volunteer" element={<Volunteer />} />
-                      <Route path="/contact" element={<Contact />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Register />} />
-                    </Routes>
-                  </main>
-                  <Footer />
-                </div>
-              }
-            />
+            {/* Public Routes (with Header/Footer Layout) */}
+            <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+            <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+            <Route path="/vision-mission" element={<PublicLayout><VisionMission /></PublicLayout>} />
+            <Route path="/events" element={<PublicLayout><Events /></PublicLayout>} />
+            <Route path="/profile" element={<PublicLayout><Profile /></PublicLayout>} />
+            <Route path="/feedback" element={<PublicLayout><Feedback /></PublicLayout>} />
+            <Route path="/volunteer" element={<PublicLayout><Volunteer /></PublicLayout>} />
+            <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+            <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
+            <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
           </Routes>
         </Router>
       </UserAuthProvider>
